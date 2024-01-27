@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,15 +21,19 @@ public class FolderService {
     public List<Folder> findAll() {
         return (List<Folder>)this.folderRepository.findAll();
     }
-    // find by id?
+
+    @Transactional(readOnly = true)
+    public List<Folder> findAllByUserId(Long userId) {
+        return (List<Folder>)this.folderRepository.findAllByUserId(userId);
+    }
 
     @Transactional
-    public Folder save(Folder folder) {
+    public Folder save(@NonNull Folder folder) {
         return this.folderRepository.save(folder);
     }
 
     @Transactional
-    public Optional<Folder> update(Long id, Folder folder) {
+    public Optional<Folder> update(@NonNull Long id, Folder folder) {
         Optional<Folder> folderOptional = this.folderRepository.findById(id);
         if(folderOptional.isPresent()) {
             Folder folderDb = folderOptional.orElseThrow();
@@ -40,11 +45,13 @@ public class FolderService {
         return folderOptional;
     }
 
-    @Transactional // ver on cascade
-    public Optional<Folder> delete(Long id) {
+    @Transactional
+    public Optional<Folder> delete(@NonNull Long id) {
         Optional<Folder> folderOptional = this.folderRepository.findById(id);
         folderOptional.ifPresent(folderDb -> {
-            this.folderRepository.delete(folderDb);
+            if(folderDb != null){
+                this.folderRepository.delete(folderDb);
+            }
         });
         return folderOptional;
     }

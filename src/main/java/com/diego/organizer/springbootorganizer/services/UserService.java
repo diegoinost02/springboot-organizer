@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,12 +31,12 @@ public class UserService {
     }
 
     @Transactional
-    public User save(User user) {
+    public User save(@NonNull User user) {
         return this.userRepository.save(user);
     }
 
     @Transactional
-    public Optional<User> update(Long id, User user) {
+    public Optional<User> update(@NonNull Long id, User user) {
         Optional<User> userOptional = this.userRepository.findById(id);
         if(userOptional.isPresent()) {
             User userDb = userOptional.orElseThrow();
@@ -49,11 +50,13 @@ public class UserService {
         return userOptional;
     }
 
-    @Transactional // ver on cascade
-    public Optional<User> delete(Long id) {
+    @Transactional
+    public Optional<User> delete(@NonNull Long id) {
         Optional<User> userOptional = this.userRepository.findById(id);
         userOptional.ifPresent(userDb -> {
-            this.userRepository.delete(userDb);
+            if (userDb != null) {
+                this.userRepository.delete(userDb);
+            }
         });
         return userOptional;
     }

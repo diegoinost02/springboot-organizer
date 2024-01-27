@@ -35,6 +35,11 @@ public class FolderController {
         return this.folderService.findAll();
     }
 
+    @GetMapping("/user/{userId}")
+    public List<Folder> listByUserId(@PathVariable Long userId) {
+        return this.folderService.findAllByUserId(userId);
+    }
+
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody Folder folder, BindingResult result) {
         if(result.hasFieldErrors()){

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,15 +21,19 @@ public class NoteService {
     public List<Note> findAll() {
         return (List<Note>)this.noteRepository.findAll();
     }
-    // find by id?
 
     @Transactional(readOnly = true)
-    public Note save(Note note) {
+    public List<Note> findAllByUserId(Long userId) {
+        return (List<Note>)this.noteRepository.findAllByUserId(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public Note save(@NonNull Note note) {
         return this.noteRepository.save(note);
     }
 
     @Transactional
-    public Optional<Note> update(Long id, Note note) {
+    public Optional<Note> update(@NonNull Long id, Note note) {
         Optional<Note> noteOptional = this.noteRepository.findById(id);
         if(noteOptional.isPresent()) {
             Note noteDb = noteOptional.orElseThrow();
@@ -42,11 +47,13 @@ public class NoteService {
         return noteOptional;
     }
 
-    @Transactional // ver on cascade
-    public Optional<Note> delete(Long id) {
+    @Transactional
+    public Optional<Note> delete(@NonNull Long id) {
         Optional<Note> noteOptional = this.noteRepository.findById(id);
         noteOptional.ifPresent(noteDb -> {
-            this.noteRepository.delete(noteDb);
+            if (noteDb != null) {
+                this.noteRepository.delete(noteDb);
+            }
         });
         return noteOptional;
     }
