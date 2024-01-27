@@ -15,7 +15,7 @@ public class NoteService {
     private NoteRepository noteRepository;
 
     @Transactional(readOnly = true)
-    private List<Note> findAll() {
+    public List<Note> findAll() {
         return (List<Note>)this.noteRepository.findAll();
     }
     // find by id?
