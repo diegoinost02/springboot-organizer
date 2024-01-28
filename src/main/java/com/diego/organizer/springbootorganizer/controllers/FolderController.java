@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +42,7 @@ public class FolderController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody Folder folder, BindingResult result) {
+    public ResponseEntity<?> create(@Valid @RequestBody @NonNull Folder folder, BindingResult result) {
         if(result.hasFieldErrors()){
             return this.validation(result);
         }
@@ -49,7 +50,7 @@ public class FolderController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@Valid @RequestBody Folder folder, BindingResult result, @PathVariable Long id) {
+    public ResponseEntity<?> update(@Valid @RequestBody Folder folder, BindingResult result, @NonNull @PathVariable Long id) {
         if(result.hasFieldErrors()) {
             return this.validation(result);
         }
@@ -61,7 +62,7 @@ public class FolderController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable @NonNull Long id) {
         Optional<Folder> folderOptional = this.folderService.delete(id);
         if(folderOptional.isPresent()) {
             return ResponseEntity.noContent().build();

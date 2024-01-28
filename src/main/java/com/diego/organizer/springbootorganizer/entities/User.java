@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -44,12 +45,13 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // no se muestra en el json de las peticiones get
     private String password;
 
-    @JsonIgnoreProperties({"roles", "handler", "hibernateLazyInitializer"}) //ignora los atributos -> evita la recursividad infinita
-    @OneToMany(mappedBy = "user")
+    @JsonIgnoreProperties({"user", "handler", "hibernateLazyInitializer"}) //ignora los atributos -> evita la recursividad infinita
+    @OneToMany (mappedBy = "user", fetch = FetchType.EAGER)
     private List<Folder> folders;
 
-    @JsonIgnoreProperties({"roles", "handler", "hibernateLazyInitializer"})
-    @OneToMany(mappedBy = "user")
+
+    @JsonIgnoreProperties({"user", "handler", "hibernateLazyInitializer"}) //ignora los atributos -> evita la recursividad infinita
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER) //, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Note> notes;
 
 
@@ -69,6 +71,8 @@ public class User {
 
     public User() {
         this.roles = new ArrayList<>();
+        this.folders = new ArrayList<>();
+        this.notes = new ArrayList<>();
     }
 
     public Long getId() {
@@ -171,7 +175,6 @@ public class User {
             return false;
         return true;
     }
-
     
     
 }

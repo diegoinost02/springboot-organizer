@@ -1,5 +1,6 @@
 package com.diego.organizer.springbootorganizer.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -24,6 +25,10 @@ public class Role {
     @JsonIgnoreProperties({"roles", "handler", "hibernateLazyInitializer"}) //ignora los atributos -> evita la recursividad infinita
     @ManyToMany(mappedBy = "roles")
     private List<User> users;
+
+    public Role() {
+        this.users = new ArrayList<>();
+    }
 
     public Long getId() {
         return id;

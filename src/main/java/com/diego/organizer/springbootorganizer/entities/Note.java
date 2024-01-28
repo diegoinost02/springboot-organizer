@@ -1,5 +1,9 @@
 package com.diego.organizer.springbootorganizer.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Entity;
@@ -7,9 +11,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
@@ -26,17 +33,26 @@ public class Note {
     @NotBlank
     private String description;
 
-    @JsonIgnoreProperties({"roles", "handler", "hibernateLazyInitializer"}) //ignora los atributos -> evita la recursividad infinita
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id")
     private User user;
 
-    @JsonIgnoreProperties({"roles", "handler", "hibernateLazyInitializer"})
-    @ManyToOne
-    @JoinColumn(name = "folder_id")
-    private Folder folder;
+    @JsonIgnoreProperties({"notes", "handler", "hibernateLazyInitializer"})
+    @ManyToMany
+    @JoinTable(
+        name = "notes_folders", // lista intermedia
+        joinColumns = @JoinColumn(name = "note_id"),
+        inverseJoinColumns = @JoinColumn(name = "folder_id"),
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"note_id", "folder_id"}) }
+    )
+    private List<Folder> folders;
 
     private boolean status;
+
+    public Note() {
+        this.folders = new ArrayList<>();
+    }
 
     @PrePersist
     public void prePersist() {
@@ -75,12 +91,12 @@ public class Note {
         this.user = user;
     }
     
-    public Folder getFolder() {
-        return folder;
+    public List<Folder> getFolders() {
+        return folders;
     }
 
-    public void setFolder(Folder folder) {
-        this.folder = folder;
+    public void setFolder(List<Folder> folders) {
+        this.folders = folders;
     }
 
     public boolean isStatus() {

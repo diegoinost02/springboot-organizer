@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +42,7 @@ public class NoteController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@Valid @RequestBody Note note, BindingResult result) {
+    public ResponseEntity<?> create(@Valid @RequestBody @NonNull Note note, BindingResult result) {
         if(result.hasFieldErrors()){
             return this.validation(result);
         }
@@ -49,7 +50,7 @@ public class NoteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@Valid @RequestBody Note note, BindingResult result, @PathVariable Long id) {
+    public ResponseEntity<?> update(@Valid @RequestBody Note note, BindingResult result, @NonNull @PathVariable Long id) {
         if(result.hasFieldErrors()) {
             return this.validation(result);
         }
@@ -61,7 +62,7 @@ public class NoteController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable @NonNull Long id) {
         Optional<Note> noteOptional = this.noteService.delete(id);
         if (noteOptional.isPresent()) {
             return ResponseEntity.ok(noteOptional.orElseThrow());
