@@ -46,12 +46,12 @@ public class User {
     private String password;
 
     @JsonIgnoreProperties({"user", "handler", "hibernateLazyInitializer"}) //ignora los atributos -> evita la recursividad infinita
-    @OneToMany (mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany (mappedBy = "user")
     private List<Folder> folders;
 
 
     @JsonIgnoreProperties({"user", "handler", "hibernateLazyInitializer"}) //ignora los atributos -> evita la recursividad infinita
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER) //, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user") //, cascade = CascadeType.ALL
     private List<Note> notes;
 
 
