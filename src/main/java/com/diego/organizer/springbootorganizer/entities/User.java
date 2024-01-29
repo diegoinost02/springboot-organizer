@@ -17,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.persistence.UniqueConstraint;
@@ -68,14 +69,21 @@ public class User {
     )
     private List<Role> roles;
 
-    @Transient // no es un campo de persistencia, es propio de la clase -> el campo no existe en la en la bdd
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // no se muestra en el json de las peticiones get
-    private boolean admin;
-
     public User() {
         this.roles = new ArrayList<>();
         this.folders = new ArrayList<>();
         this.notes = new ArrayList<>();
+    }
+
+    @Transient // no es un campo de persistencia, es propio de la clase -> el campo no existe en la en la bdd
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // no se muestra en el json de las peticiones get
+    private boolean admin;
+
+    private boolean enabled;
+
+    @PrePersist
+    public void prePersist() {
+        this.enabled = true;
     }
 
     public Long getId() {
@@ -116,6 +124,14 @@ public class User {
 
     public void setNotes(List<Note> notes) {
         this.notes = notes;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public List<Folder> getFolders() {
