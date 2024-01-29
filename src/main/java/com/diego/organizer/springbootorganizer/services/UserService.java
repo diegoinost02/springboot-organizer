@@ -83,4 +83,11 @@ public class UserService {
         });
         return userOptional;
     }
+
+    public boolean existByUsername(String username) {
+        return this.userRepository.existsByUsername(username);
+    }
+    public boolean existByEmail(String email) {
+        return this.userRepository.existsByEmail(email);
+    }
 }

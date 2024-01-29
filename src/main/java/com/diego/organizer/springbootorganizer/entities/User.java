@@ -3,6 +3,8 @@ package com.diego.organizer.springbootorganizer.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.diego.organizer.springbootorganizer.validation.ExistByEmail;
+import com.diego.organizer.springbootorganizer.validation.ExistByUsername;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -30,11 +32,13 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ExistByUsername
     @NotBlank
     @Size(min = 1, max = 20)
     @Column(unique = true)
     private String username;
 
+    @ExistByEmail
     @NotBlank
     @Email
     @Column(unique = true)
