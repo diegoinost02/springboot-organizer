@@ -10,11 +10,13 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.diego.organizer.springbootorganizer.entities.User;
 import com.diego.organizer.springbootorganizer.repositories.UserRepository;
 
+@Service
 public class UserSecuritySerevice implements UserDetailsService{ // busca al usuario en la base de datos para loguearse
 
     @Autowired
@@ -29,7 +31,6 @@ public class UserSecuritySerevice implements UserDetailsService{ // busca al usu
         if(!userOptional.isPresent()){
             throw new UsernameNotFoundException("Username not found");
         }
-
         User user = userOptional.orElseThrow();
 
         List<GrantedAuthority> authorities = user.getRoles()

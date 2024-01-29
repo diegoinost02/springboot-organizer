@@ -28,7 +28,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import static com.diego.organizer.springbootorganizer.security.TokenJwtConfig.*;
 
-public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
+public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{ // crear token
 
     private AuthenticationManager authenticationManager;
 
@@ -46,8 +46,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
                 try {
                     user = new ObjectMapper().readValue(request.getInputStream(), User.class);
-                    username = request.getParameter("username");
-                    password = request.getParameter("password");
+                    username = user.getUsername();
+                    password = user.getPassword();
 
                 } catch (StreamReadException e) { // error de lectura del stream
                     e.printStackTrace();
@@ -76,7 +76,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 String token = Jwts.builder()
                     .subject(username)
                     .claims(claims)
-                    .expiration(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(3))) // 1 dia
+                    .expiration(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(5)))
+                    .issuedAt(new Date())
+                    .signWith(SECRET_KEY)
+                    .compact();
+
+                String refreshToken = Jwts.builder()
+                    .subject(username)
+                    .claims(claims)
+                    .expiration(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(30)))
                     .issuedAt(new Date())
                     .signWith(SECRET_KEY)
                     .compact();
@@ -85,6 +93,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
                 Map<String, String> body = new HashMap<>();
                 body.put("token", token);
+                body.put("refresh_token", refreshToken);
                 body.put("username", username);
                 body.put("message", String.format("Inicio de sesion del usuario %s exitoso", username));
 
@@ -97,8 +106,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException failed) throws IOException, ServletException {
-        super.unsuccessfulAuthentication(request, response, failed);
+                Map<String, String> body = new HashMap<>();
+                body.put("message", "Error de autenticacion: username o password incorrectos");
+                body.put("error", failed.getMessage());
+
+                response.getWriter().write(new ObjectMapper().writeValueAsString(body));
+                response.setContentType(CONTENT_TYPE);
+                response.setStatus(401); // unauthorized
     }
 
-    
 }
