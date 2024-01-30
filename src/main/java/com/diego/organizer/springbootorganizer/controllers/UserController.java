@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.diego.organizer.springbootorganizer.entities.User;
+import com.diego.organizer.springbootorganizer.services.UserSecuritySerevice;
 import com.diego.organizer.springbootorganizer.services.UserService;
 
 import io.jsonwebtoken.Claims;
@@ -36,6 +37,10 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserSecuritySerevice userSecuritySerevice;
+
 
     @GetMapping
     public List<User> list() {
@@ -67,40 +72,14 @@ public class UserController {
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<?> refreshAuthenticationToken(@RequestHeader(HEADER_AUTHORIZATION) String refreshToken) {
-        
-        // String token = refreshToken.replace(PREFIX_TOKEN, "");
-        refreshToken = refreshToken.replace("Bearer ", "");
-
+    public ResponseEntity<?> refreshAuthenticationToken(@RequestHeader("Authorization") String refreshToken) {
         try {
-            Claims claims = Jwts.parser().verifyWith(SECRET_KEY).build().parseSignedClaims(refreshToken).getPayload();
-
-            String newToken = Jwts.builder()
-                .subject(claims.getSubject())
-                .claims(claims)
-                .expiration(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(5)))
-                .issuedAt(new Date())
-                .signWith(SECRET_KEY)
-                .compact();
-            
-            String newRefreshToken = Jwts.builder()
-                .subject(claims.getSubject())
-                .claims(claims)
-                .expiration(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(30)))
-                .issuedAt(new Date())
-                .signWith(SECRET_KEY)
-                .compact();
-
-            Map<String, String> tokens = new LinkedHashMap<>();
-            tokens.put("token", newToken);
-            tokens.put("refresh_token", newRefreshToken);
-
+            Map<String, String> tokens = this. userSecuritySerevice.refreshAuthenticationToken(refreshToken);
             return ResponseEntity.ok(tokens);
-
         } catch (JwtException e) {
             Map<String, String> body = new HashMap<>();
             body.put("error", e.getMessage());
-            body.put("message", "El token JTW es invalido");
+            body.put("message", "El token JWT es inválido");
 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
         }

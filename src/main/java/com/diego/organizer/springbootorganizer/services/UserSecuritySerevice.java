@@ -1,7 +1,11 @@
 package com.diego.organizer.springbootorganizer.services;
 
+import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.diego.organizer.springbootorganizer.entities.User;
 import com.diego.organizer.springbootorganizer.repositories.UserRepository;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+
+import static com.diego.organizer.springbootorganizer.security.TokenJwtConfig.*;
+
 
 @Service
 public class UserSecuritySerevice implements UserDetailsService{ // busca al usuario en la base de datos para loguearse
@@ -46,6 +57,40 @@ public class UserSecuritySerevice implements UserDetailsService{ // busca al usu
             true,
             true,
             authorities);
+    }
+
+    @Transactional
+    public Map<String, String> refreshAuthenticationToken(String refreshToken) {
+        refreshToken = refreshToken.replace("Bearer ", "");
+
+        try {
+            Claims claims = Jwts.parser().verifyWith(SECRET_KEY).build().parseSignedClaims(refreshToken).getPayload();
+
+            String newToken = Jwts.builder()
+                .subject(claims.getSubject())
+                .claims(claims)
+                .expiration(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(5)))
+                .issuedAt(new Date())
+                .signWith(SECRET_KEY)
+                .compact();
+            
+            String newRefreshToken = Jwts.builder()
+                .subject(claims.getSubject())
+                .claims(claims)
+                .expiration(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(30)))
+                .issuedAt(new Date())
+                .signWith(SECRET_KEY)
+                .compact();
+
+            Map<String, String> tokens = new LinkedHashMap<>();
+            tokens.put("token", newToken);
+            tokens.put("refresh_token", newRefreshToken);
+
+            return tokens;
+
+        } catch (JwtException e) {
+            throw new JwtException("El token JWT es inválido", e);
+        }
     }
 }
  
