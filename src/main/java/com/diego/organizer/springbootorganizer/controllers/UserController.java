@@ -1,11 +1,9 @@
 package com.diego.organizer.springbootorganizer.controllers;
 
-import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -23,13 +22,8 @@ import com.diego.organizer.springbootorganizer.entities.User;
 import com.diego.organizer.springbootorganizer.services.UserSecuritySerevice;
 import com.diego.organizer.springbootorganizer.services.UserService;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
 import jakarta.validation.Valid;
-
-import static com.diego.organizer.springbootorganizer.security.TokenJwtConfig.*;
-
 
 @RestController
 @RequestMapping("/api/users")
@@ -47,6 +41,15 @@ public class UserController {
         return this.userService.findAll();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> view(@Valid @PathVariable Long id) {
+        Optional<User> userOptional = this.userService.findById(id);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(userOptional.orElseThrow());
+    }
+
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody @NonNull User user, BindingResult result) {
         if(result.hasFieldErrors()){
@@ -61,16 +64,6 @@ public class UserController {
         return create(user, result);
     }
 
-    private ResponseEntity<?> validation(BindingResult result) {
-        Map<String, String> errors = new HashMap<>();
-
-        result.getFieldErrors().forEach(err -> {
-            errors.put(err.getField(), "Error: " + err.getField() + " " + err.getDefaultMessage());
-        });
-
-        return ResponseEntity.badRequest().body(errors);
-    }
-
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshAuthenticationToken(@RequestHeader("Authorization") String refreshToken) {
         try {
@@ -83,5 +76,15 @@ public class UserController {
 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
         }
+    }
+
+    private ResponseEntity<?> validation(BindingResult result) {
+        Map<String, String> errors = new HashMap<>();
+
+        result.getFieldErrors().forEach(err -> {
+            errors.put(err.getField(), "Error: " + err.getField() + " " + err.getDefaultMessage());
+        });
+
+        return ResponseEntity.badRequest().body(errors);
     }
 }
