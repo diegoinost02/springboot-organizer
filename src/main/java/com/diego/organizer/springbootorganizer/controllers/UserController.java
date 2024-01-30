@@ -2,6 +2,7 @@ package com.diego.organizer.springbootorganizer.controllers;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -90,7 +91,7 @@ public class UserController {
                 .signWith(SECRET_KEY)
                 .compact();
 
-            Map<String, String> tokens = new HashMap<>();
+            Map<String, String> tokens = new LinkedHashMap<>();
             tokens.put("token", newToken);
             tokens.put("refresh_token", newRefreshToken);
 

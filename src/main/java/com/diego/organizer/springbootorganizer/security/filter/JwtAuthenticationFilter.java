@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -76,7 +77,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 String token = Jwts.builder()
                     .subject(username)
                     .claims(claims)
-                    .expiration(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(5)))
+                    .expiration(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(5))) // 5 dias
                     .issuedAt(new Date())
                     .signWith(SECRET_KEY)
                     .compact();
@@ -84,18 +85,18 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 String refreshToken = Jwts.builder()
                     .subject(username)
                     .claims(claims)
-                    .expiration(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(30)))
+                    .expiration(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(30))) // 30 dias
                     .issuedAt(new Date())
                     .signWith(SECRET_KEY)
                     .compact();
 
                 response.addHeader(HEADER_AUTHORIZATION, PREFIX_TOKEN + token);
 
-                Map<String, String> body = new HashMap<>();
-                body.put("token", token);
-                body.put("refresh_token", refreshToken);
+                Map<String, String> body = new LinkedHashMap<>(); // mantiene el orden de insercion de los elementos
                 body.put("username", username);
                 body.put("message", String.format("Inicio de sesion del usuario %s exitoso", username));
+                body.put("token", token);
+                body.put("refresh_token", refreshToken);
 
                 response.getWriter().write(new ObjectMapper().writeValueAsString(body)); // genera el json
                 response.setContentType(CONTENT_TYPE); // "application/json"
