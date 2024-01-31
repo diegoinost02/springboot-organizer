@@ -1,7 +1,6 @@
 package com.diego.organizer.springbootorganizer.security;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -49,7 +48,7 @@ public class SecurityConfig {
         // users
         .requestMatchers(HttpMethod.POST,"/api/users/register").permitAll() // registrarse
         .requestMatchers(HttpMethod.GET,"/api/users/{id}").hasAnyRole("USER", "ADMIN") // obtener user por id
-        .requestMatchers(HttpMethod.GET,"/api/users").permitAll() //.hasRole("ADMIN") // obtener todos los users
+        .requestMatchers(HttpMethod.GET,"/api/users").hasRole("ADMIN") // obtener todos los users
         .requestMatchers(HttpMethod.POST, "/api/users").hasRole("ADMIN") // crear users con role de admin
         .requestMatchers(HttpMethod.POST, "/api/users/refresh").hasAnyRole("USER", "ADMIN") // refrescar token
 
