@@ -52,6 +52,15 @@ public class UserController {
         return ResponseEntity.ok(userOptional.orElseThrow());
     }
 
+    @GetMapping("/{username}")
+    public ResponseEntity<?> profile(@Valid @PathVariable String username) {
+        Optional<User> userOptional = this.userService.findByUsername(username);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(userOptional.orElseThrow());
+    }
+
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody @NonNull User user, BindingResult result) {
         if(result.hasFieldErrors()){

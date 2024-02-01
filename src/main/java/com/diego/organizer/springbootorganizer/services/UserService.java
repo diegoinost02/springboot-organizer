@@ -41,6 +41,14 @@ public class UserService {
         return this.userRepository.findById(id);
     }
 
+    @Transactional(readOnly = true)
+    public Optional<User> findByUsername(String username) {
+        if(username == null) {
+            return Optional.empty();
+        }
+        return this.userRepository.findByUsername(username);
+    }
+
     @Transactional
     public User save(@NonNull User user) {
         Optional<Role> roleOptional = this.roleRepository.findByName("ROLE_USER");

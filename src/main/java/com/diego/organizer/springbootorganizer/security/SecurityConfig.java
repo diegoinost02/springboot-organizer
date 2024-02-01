@@ -48,6 +48,7 @@ public class SecurityConfig {
         // users
         .requestMatchers(HttpMethod.POST,"/api/users/register").permitAll() // registrarse
         .requestMatchers(HttpMethod.GET,"/api/users/{id}").hasAnyRole("USER", "ADMIN") // obtener user por id
+        .requestMatchers(HttpMethod.GET,"/api/users/{username}").hasAnyRole("USER", "ADMIN") // obtener user por username
         .requestMatchers(HttpMethod.GET,"/api/users").hasRole("ADMIN") // obtener todos los users
         .requestMatchers(HttpMethod.POST, "/api/users").hasRole("ADMIN") // crear users con role de admin
         .requestMatchers(HttpMethod.POST, "/api/users/refresh").hasAnyRole("USER", "ADMIN") // refrescar token
