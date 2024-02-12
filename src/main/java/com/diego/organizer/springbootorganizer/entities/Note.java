@@ -33,7 +33,7 @@ public class Note {
     private String title;
 
     @NotBlank
-    @Size(max = 200)
+    @Size(max = 2000)
     private String description;
 
     @ManyToOne
