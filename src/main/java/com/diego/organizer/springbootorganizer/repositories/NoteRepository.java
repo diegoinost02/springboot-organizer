@@ -9,4 +9,6 @@ import com.diego.organizer.springbootorganizer.entities.Note;
 public interface NoteRepository extends CrudRepository<Note, Long>{
     
     List<Note> findAllByUserId(Long userId);
+
+    List<Note> findAllByUserIdAndStatus(Long userId, boolean status);
 }

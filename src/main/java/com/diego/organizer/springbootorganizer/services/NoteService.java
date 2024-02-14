@@ -28,6 +28,11 @@ public class NoteService {
     }
 
     @Transactional(readOnly = true)
+    public List<Note> findAllByUserIdAndStatus(Long userId, boolean status) {
+        return (List<Note>)this.noteRepository.findAllByUserIdAndStatus(userId, status);
+    }
+
+    @Transactional(readOnly = true)
     public Note save(@NonNull Note note) {
         return this.noteRepository.save(note);
     }

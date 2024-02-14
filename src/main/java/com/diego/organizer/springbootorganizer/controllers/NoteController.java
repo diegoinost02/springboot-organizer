@@ -43,6 +43,11 @@ public class NoteController {
         return this.noteService.findAllByUserId(userId);
     }
 
+    @GetMapping("/user/{userId}/status/{status}")
+    public List<Note> listByUserIdAndStatus(@PathVariable Long userId, @PathVariable boolean status) {
+        return this.noteService.findAllByUserIdAndStatus(userId, status);
+    }
+
     @PostMapping
     public ResponseEntity<?> create(@Valid @RequestBody @NonNull Note note, BindingResult result) {
         if(result.hasFieldErrors()){

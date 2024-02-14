@@ -56,6 +56,7 @@ public class SecurityConfig {
         // notas
         .requestMatchers(HttpMethod.GET, "/api/notes").hasAnyRole("USER", "ADMIN") // obtener todas las notas
         .requestMatchers(HttpMethod.GET, "/api/notes/user/{userId}").hasAnyRole("USER", "ADMIN") // obtener notas por userId
+        .requestMatchers(HttpMethod.GET, "/api/notes/user/{userId}/status/{status}").hasAnyRole("USER", "ADMIN") // obtener notas por userId y status
         .requestMatchers(HttpMethod.POST, "/api/notes").hasAnyRole("USER", "ADMIN") // crear notas
         .requestMatchers(HttpMethod.PUT, "/api/notes/{id}").hasAnyRole("USER", "ADMIN") // actualizar notas
         .requestMatchers(HttpMethod.DELETE, "/api/notes/{id}").hasAnyRole("USER", "ADMIN") // borrar notas
