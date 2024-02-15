@@ -52,7 +52,7 @@ public class UserController {
         return ResponseEntity.ok(userOptional.orElseThrow());
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/user/{username}")
     public ResponseEntity<?> profile(@Valid @PathVariable String username) {
         Optional<User> userOptional = this.userService.findByUsername(username);
         if (!userOptional.isPresent()) {
