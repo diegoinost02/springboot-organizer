@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.diego.organizer.springbootorganizer.validation.ExistByEmail;
 import com.diego.organizer.springbootorganizer.validation.ExistByUsername;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -49,13 +50,15 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // no se muestra en el json de las peticiones get
     private String password;
 
-    @JsonIgnoreProperties({"user", "handler", "hibernateLazyInitializer"}) //ignora los atributos -> evita la recursividad infinita
+    // @JsonIgnoreProperties({"user", "handler", "hibernateLazyInitializer"}) //ignora los atributos -> evita la recursividad infinita
     @OneToMany (mappedBy = "user")
+    @JsonIgnore
     private List<Folder> folders;
 
 
-    @JsonIgnoreProperties({"user", "handler", "hibernateLazyInitializer"}) //ignora los atributos -> evita la recursividad infinita
+    // @JsonIgnoreProperties({"user", "handler", "hibernateLazyInitializer"}) //ignora los atributos -> evita la recursividad infinita
     @OneToMany(mappedBy = "user") //, cascade = CascadeType.ALL
+    @JsonIgnore
     private List<Note> notes;
 
 

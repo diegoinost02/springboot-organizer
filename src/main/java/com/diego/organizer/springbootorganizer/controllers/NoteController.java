@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,6 +42,11 @@ public class NoteController {
     @GetMapping("/user/{userId}")
     public List<Note> listByUserId(@PathVariable Long userId) {
         return this.noteService.findAllByUserId(userId);
+    }
+
+    @GetMapping("/folder/{folderId}/status/{status}") // !!
+    public List<Note> listByFolderIdAndStatus(@PathVariable Long folderId, @PathVariable boolean status) {
+        return this.noteService.findAllByStatusAndFoldersId(folderId, status);
     }
 
     @GetMapping("/user/{userId}/status/{status}")

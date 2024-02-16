@@ -28,9 +28,15 @@ public class NoteService {
     }
 
     @Transactional(readOnly = true)
+    public List<Note> findAllByStatusAndFoldersId(Long folderId, boolean status){
+        return (List<Note>)this.noteRepository.findAllByFoldersIdAndStatus(folderId, status);
+    }
+
+    @Transactional(readOnly = true)
     public List<Note> findAllByUserIdAndStatus(Long userId, boolean status) {
         return (List<Note>)this.noteRepository.findAllByUserIdAndStatus(userId, status);
     }
+
 
     @Transactional(readOnly = true)
     public Note save(@NonNull Note note) {

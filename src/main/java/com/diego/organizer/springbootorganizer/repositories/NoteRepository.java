@@ -11,4 +11,6 @@ public interface NoteRepository extends CrudRepository<Note, Long>{
     List<Note> findAllByUserId(Long userId);
 
     List<Note> findAllByUserIdAndStatus(Long userId, boolean status);
+
+    List<Note> findAllByFoldersIdAndStatus(Long folderId, boolean status);
 }

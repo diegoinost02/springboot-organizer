@@ -32,7 +32,8 @@ public class Folder {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @JsonIgnoreProperties({"folder", "handler", "hibernateLazyInitializer"})
+    // @JsonIgnoreProperties({"folder", "handler", "hibernateLazyInitializer"})
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
         name = "notes_folders", // lista intermedia
