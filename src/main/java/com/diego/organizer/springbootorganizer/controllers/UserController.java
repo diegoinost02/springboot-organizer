@@ -61,7 +61,7 @@ public class UserController {
         return ResponseEntity.ok(userOptional.orElseThrow());
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<?> create(@Valid @RequestBody @NonNull User user, BindingResult result) {
         if(result.hasFieldErrors()){
             return this.validation(result);

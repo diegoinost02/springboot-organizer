@@ -43,7 +43,7 @@ public class FolderController {
         return this.folderService.findAllByUserId(userId);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<?> create(@Valid @RequestBody @NonNull Folder folder, BindingResult result) {
         if(result.hasFieldErrors()){
             return this.validation(result);
@@ -51,7 +51,7 @@ public class FolderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.folderService.save(folder));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<?> update(@Valid @RequestBody Folder folder, BindingResult result, @NonNull @PathVariable Long id) {
         if(result.hasFieldErrors()) {
             return this.validation(result);
@@ -63,7 +63,7 @@ public class FolderController {
         return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable @NonNull Long id) {
         Optional<Folder> folderOptional = this.folderService.delete(id);
         if(folderOptional.isPresent()) {

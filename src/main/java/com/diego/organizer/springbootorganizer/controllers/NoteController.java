@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -54,7 +53,7 @@ public class NoteController {
         return this.noteService.findAllByUserIdAndStatus(userId, status);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<?> create(@Valid @RequestBody @NonNull Note note, BindingResult result) {
         if(result.hasFieldErrors()){
             return this.validation(result);
@@ -62,7 +61,7 @@ public class NoteController {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.noteService.save(note));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<?> update(@Valid @RequestBody Note note, BindingResult result, @NonNull @PathVariable Long id) {
         if(result.hasFieldErrors()) {
             return this.validation(result);
@@ -74,7 +73,7 @@ public class NoteController {
         return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable @NonNull Long id) {
         Optional<Note> noteOptional = this.noteService.delete(id);
         if (noteOptional.isPresent()) {
