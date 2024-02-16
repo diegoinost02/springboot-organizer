@@ -50,7 +50,7 @@ public class SecurityConfig {
         .requestMatchers(HttpMethod.GET,"/api/users/{id}").hasAnyRole("USER", "ADMIN") // obtener user por id
         .requestMatchers(HttpMethod.GET,"/api/users/user/{username}").hasAnyRole("USER", "ADMIN") // obtener user por username
         .requestMatchers(HttpMethod.GET,"/api/users").hasRole("ADMIN") // obtener todos los users
-        .requestMatchers(HttpMethod.POST, "/api/users").hasRole("ADMIN") // crear users con role de admin
+        .requestMatchers(HttpMethod.POST, "/api/users/create").hasRole("ADMIN") // crear users con role de admin
         .requestMatchers(HttpMethod.POST, "/api/users/refresh").hasAnyRole("USER", "ADMIN") // refrescar token
 
         // notas
@@ -58,16 +58,16 @@ public class SecurityConfig {
         .requestMatchers(HttpMethod.GET, "/api/notes/user/{userId}").hasAnyRole("USER", "ADMIN") // obtener notas por userId
         .requestMatchers(HttpMethod.GET, "/api/notes/user/{userId}/status/{status}").hasAnyRole("USER", "ADMIN") // obtener notas por userId y status
         .requestMatchers(HttpMethod.GET, "/api/notes/folder/{folderId}/status/{status}").hasAnyRole("USER", "ADMIN") // obtener notas por folderId y status
-        .requestMatchers(HttpMethod.POST, "/api/notes").hasAnyRole("USER", "ADMIN") // crear notas
-        .requestMatchers(HttpMethod.PUT, "/api/notes/{id}").hasAnyRole("USER", "ADMIN") // actualizar notas
-        .requestMatchers(HttpMethod.DELETE, "/api/notes/{id}").hasAnyRole("USER", "ADMIN") // borrar notas
+        .requestMatchers(HttpMethod.POST, "/api/notes/create").hasAnyRole("USER", "ADMIN") // crear notas
+        .requestMatchers(HttpMethod.PUT, "/api/notes/update/{id}").hasAnyRole("USER", "ADMIN") // actualizar notas
+        .requestMatchers(HttpMethod.DELETE, "/api/notes/delete/{id}").hasAnyRole("USER", "ADMIN") // borrar notas
 
         // folders
         .requestMatchers(HttpMethod.GET, "/api/folders").hasAnyRole("USER", "ADMIN") // obtener todas las carpetas
         .requestMatchers(HttpMethod.GET, "/api/folders/user/{userId}").hasAnyRole("USER", "ADMIN") // obtener carpetas por userId
-        .requestMatchers(HttpMethod.POST, "/api/folders").hasAnyRole("USER", "ADMIN") // crear carpetas
-        .requestMatchers(HttpMethod.PUT, "/api/folders/{id}").hasAnyRole("USER", "ADMIN") // actualizar carpetas
-        .requestMatchers(HttpMethod.DELETE, "/api/folders/{id}").hasAnyRole("USER", "ADMIN") // borrar carpetas
+        .requestMatchers(HttpMethod.POST, "/api/folders/create").hasAnyRole("USER", "ADMIN") // crear carpetas
+        .requestMatchers(HttpMethod.PUT, "/api/folders/update/{id}").hasAnyRole("USER", "ADMIN") // actualizar carpetas
+        .requestMatchers(HttpMethod.DELETE, "/api/folders/delete/{id}").hasAnyRole("USER", "ADMIN") // borrar carpetas
 
         .anyRequest().authenticated())
         .addFilter(new JwtAuthenticationFilter(this.authenticationManager())) // configuración propia
