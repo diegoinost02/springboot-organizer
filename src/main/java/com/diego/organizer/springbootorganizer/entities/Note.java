@@ -37,11 +37,11 @@ public class Note {
     private String description;
 
     @ManyToOne
-    @JsonIgnore
+    @JsonIgnoreProperties({"username", "email", "roles", "enabled", "handler", "hibernateLazyInitializer"})
     @JoinColumn(name = "user_id")
     private User user;
 
-    @JsonIgnoreProperties({"notes", "handler", "hibernateLazyInitializer"})
+    @JsonIgnoreProperties({"notes", "name", "handler", "hibernateLazyInitializer"})
     @ManyToMany
     @JoinTable(
         name = "notes_folders", // lista intermedia

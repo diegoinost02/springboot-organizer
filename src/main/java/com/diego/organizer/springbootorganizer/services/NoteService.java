@@ -38,7 +38,7 @@ public class NoteService {
     }
 
 
-    @Transactional(readOnly = true)
+    @Transactional
     public Note save(@NonNull Note note) {
         return this.noteRepository.save(note);
     }
