@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 // import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,13 +30,13 @@ public class Folder {
     private String name;
 
     @ManyToOne
-    @JsonIgnore
+    @JsonIgnoreProperties({"username", "email", "roles", "enabled", "handler", "hibernateLazyInitializer"})
     @JoinColumn(name = "user_id")
     private User user;
 
     // @JsonIgnoreProperties({"folder", "handler", "hibernateLazyInitializer"})
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL) // to do: agregar la posibilidad de agregar notas a varias carpetas, por ahora se deja cascade
     @JoinTable(
         name = "notes_folders", // lista intermedia
         joinColumns = @JoinColumn(name = "folder_id"),

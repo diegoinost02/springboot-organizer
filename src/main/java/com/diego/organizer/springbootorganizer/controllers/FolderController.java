@@ -67,7 +67,7 @@ public class FolderController {
     public ResponseEntity<?> delete(@PathVariable @NonNull Long id) {
         Optional<Folder> folderOptional = this.folderService.delete(id);
         if(folderOptional.isPresent()) {
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(folderOptional.orElseThrow());
         }
         return ResponseEntity.notFound().build();
     }

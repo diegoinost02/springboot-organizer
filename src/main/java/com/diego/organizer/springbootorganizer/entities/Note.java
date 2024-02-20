@@ -3,7 +3,7 @@ package com.diego.organizer.springbootorganizer.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+// import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Entity;
@@ -30,7 +30,7 @@ public class Note {
     private Long id;
 
     @NotBlank
-    @Size(max = 20)
+    @Size(max = 30)
     private String title;
 
     @NotBlank
