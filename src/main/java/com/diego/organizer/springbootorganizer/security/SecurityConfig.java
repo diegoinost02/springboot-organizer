@@ -52,6 +52,7 @@ public class SecurityConfig {
         .requestMatchers(HttpMethod.GET,"/api/users").hasRole("ADMIN") // obtener todos los users
         .requestMatchers(HttpMethod.POST, "/api/users/create").hasRole("ADMIN") // crear users con role de admin
         .requestMatchers(HttpMethod.POST, "/api/users/refresh").hasAnyRole("USER", "ADMIN") // refrescar token
+        .requestMatchers(HttpMethod.PUT, "/api/users/update/{id}").hasAnyRole("USER", "ADMIN") // actualizar user
 
         // notas
         .requestMatchers(HttpMethod.GET, "/api/notes").hasAnyRole("USER", "ADMIN") // obtener todas las notas
