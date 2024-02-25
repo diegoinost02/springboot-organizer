@@ -10,9 +10,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,9 +23,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.diego.organizer.springbootorganizer.entities.User;
-import com.diego.organizer.springbootorganizer.services.UserSecuritySerevice;
+import com.diego.organizer.springbootorganizer.services.UserSecurityService;
 import com.diego.organizer.springbootorganizer.services.UserService;
 import com.diego.organizer.springbootorganizer.services.dto.UpdateUserDto;
+import com.diego.organizer.springbootorganizer.services.dto.VerifyPasswordDto;
 
 import io.jsonwebtoken.JwtException;
 import jakarta.validation.Valid;
@@ -39,7 +40,7 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private UserSecuritySerevice userSecuritySerevice;
+    private UserSecurityService userSecurityService;
 
 
     @GetMapping
@@ -82,7 +83,7 @@ public class UserController {
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshAuthenticationToken(@RequestHeader("Authorization") String refreshToken) {
         try {
-            Map<String, String> tokens = this. userSecuritySerevice.refreshAuthenticationToken(refreshToken);
+            Map<String, String> tokens = this.userSecurityService.refreshAuthenticationToken(refreshToken);
             return ResponseEntity.ok(tokens);
         } catch (JwtException e) {
             Map<String, String> body = new HashMap<>();
@@ -104,7 +105,8 @@ public class UserController {
         }
 
         User existingUser = userOptional.get();
-        if (!BCrypt.checkpw(user.getPassword(), existingUser.getPassword())) {
+
+        if(userSecurityService.verifyPasword(user.getPassword(), existingUser) == false) {
             Map<String, String> errors = new HashMap<>();
             errors.put("password", "Error: Contraseña incorrecta");
             return ResponseEntity.badRequest().body(errors);
@@ -128,6 +130,31 @@ public class UserController {
             return ResponseEntity.badRequest().body(errors);
         }
     }
+    
+    @PostMapping("/verify-password/{id}") // debe ser post para enviar el RequestBody
+    public ResponseEntity<?> verifyPassword(@PathVariable Long id, @RequestBody VerifyPasswordDto password) {
+        Optional<User> userOptional = userService.findById(id);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        User existingUser = userOptional.get();
+
+        if (userSecurityService.verifyPasword(password.getPassword(), existingUser)) {
+            return ResponseEntity.ok(existingUser);
+        } else {
+            return ResponseEntity.badRequest().body("Password is incorrect");
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable @NonNull Long id) {
+        Optional<User> userOptional = this.userService.delete(id);
+        if (userOptional.isPresent()) {
+            return ResponseEntity.ok(userOptional.orElseThrow());
+        }
+        return ResponseEntity.notFound().build();
+    }
+    
 
     private ResponseEntity<?> validation(BindingResult result) {
         Map<String, String> errors = new HashMap<>();

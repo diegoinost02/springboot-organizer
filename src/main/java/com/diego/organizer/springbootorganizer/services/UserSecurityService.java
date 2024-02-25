@@ -14,6 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +29,7 @@ import static com.diego.organizer.springbootorganizer.security.TokenJwtConfig.*;
 
 
 @Service
-public class UserSecuritySerevice implements UserDetailsService{ // busca al usuario en la base de datos para loguearse
+public class UserSecurityService implements UserDetailsService{ // busca al usuario en la base de datos para loguearse
 
     @Autowired
     private UserRepository userRepository;
@@ -90,6 +91,15 @@ public class UserSecuritySerevice implements UserDetailsService{ // busca al usu
 
         } catch (JwtException e) {
             throw new JwtException("El token JWT es inválido", e);
+        }
+    }
+
+    @Transactional
+    public boolean verifyPasword(String password, User existingUser){
+        if (BCrypt.checkpw(password, existingUser.getPassword())) {
+            return true;
+        } else {
+            return false;
         }
     }
 }

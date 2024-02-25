@@ -53,6 +53,8 @@ public class SecurityConfig {
         .requestMatchers(HttpMethod.POST, "/api/users/create").hasRole("ADMIN") // crear users con role de admin
         .requestMatchers(HttpMethod.POST, "/api/users/refresh").hasAnyRole("USER", "ADMIN") // refrescar token
         .requestMatchers(HttpMethod.PUT, "/api/users/update/{id}").hasAnyRole("USER", "ADMIN") // actualizar user
+        .requestMatchers(HttpMethod.POST, "/api/users/verify-password/{id}").hasAnyRole("USER", "ADMIN") // verificar contraseña
+        .requestMatchers(HttpMethod.DELETE, "/api/users/delete/{id}").hasAnyRole("USER", "ADMIN") // borrar user
 
         // notas
         .requestMatchers(HttpMethod.GET, "/api/notes").hasAnyRole("USER", "ADMIN") // obtener todas las notas

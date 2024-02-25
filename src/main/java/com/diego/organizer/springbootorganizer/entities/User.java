@@ -9,8 +9,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -51,19 +53,19 @@ public class User {
     private String password;
 
     // @JsonIgnoreProperties({"user", "handler", "hibernateLazyInitializer"}) //ignora los atributos -> evita la recursividad infinita
-    @OneToMany (mappedBy = "user")
+    @OneToMany (mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Folder> folders;
 
 
     // @JsonIgnoreProperties({"user", "handler", "hibernateLazyInitializer"}) //ignora los atributos -> evita la recursividad infinita
-    @OneToMany(mappedBy = "user") //, cascade = CascadeType.ALL
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Note> notes;
 
 
     @JsonIgnoreProperties({"users", "handler", "hibernateLazyInitializer"})
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "users_roles", // lista intermedia
         joinColumns = @JoinColumn(name = "user_id"),
