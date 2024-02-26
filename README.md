@@ -2,6 +2,17 @@
 
 La mejor aplicación para organizarte.
 
+## Características
+
+- Autenticación basada en JWT.
+- Implementación de Refresh Token para una mejor experiencia de usuario.
+- Encriptado de datos sensibles, garantizando la seguridad.
+- Implementación de Guards, garantizando la seguridad y una mejor experiencia de usuario.
+- Creación de carpetas y notas/tares personalizables.
+- Edición y validaciones de datos de usuario.
+- Diseño responsive.
+- Futuras actualizaciones.
+
 ## Requerimientos
 
 Para la base de datos, se necesita tener MySQL instalado.
@@ -10,7 +21,7 @@ Para el backend, se necesita tener instalado una versión de JDK igual o mayor q
 
 Para el frontend, se necesita tener Angular 17 y una versión de Node mayor que 18.
 
-## ¿Como usar?
+## ¿Cómo usar?
 
 1. Crea una base de datos MySQL con el siguiente script:
 
